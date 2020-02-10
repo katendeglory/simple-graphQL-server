@@ -1,0 +1,20 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "sevrer.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "combo": "cd .. && git add . && git commit -am \"Yet another commit\" && git push"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server": "^2.9.16",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "graphql": "^14.6.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.8.11"
+  }
+}

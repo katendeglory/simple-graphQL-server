@@ -15,8 +15,10 @@ module.exports = {
         if (!decoded) throw AuthenticationError('The Token is invalid');
         if (!body) throw UserInputError('The Comment is empty');
 
-        const comment = { id: uuid(), username: decoded.username, body, createdAt: new Date().toISOString() }
         const postToUpdate = await Post.findById(postID);
+        if (!postToUpdate) throw Error('Not Post was returned');
+
+        const comment = { id: uuid(), username: decoded.username, body, createdAt: new Date().toISOString() }
         postToUpdate.comments.unshift(comment);
         return await postToUpdate.save();
 

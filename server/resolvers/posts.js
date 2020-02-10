@@ -1,5 +1,6 @@
-const Post = require("../models/Post");
 const { UserInputError, AuthenticationError } = require('apollo-server');
+const uuid = require('uuid');
+const Post = require("../models/Post");
 const utils = require('../utils');
 
 const throwE = msg => { throw new Error(msg) };
@@ -31,6 +32,28 @@ module.exports = {
         if (decoded.username !== post.username) throw new AuthenticationError("Action not allowed");
         const deletedPost = await Post.deleteOne({ _id, username: decoded.username });
         return `${deletedPost.deletedCount}`;
+      } catch (error) {
+        throw error;
+      }
+    },
+    like: async (_, { postID }, context) => {
+      try {
+        const decoded = utils.verifyToken(context);
+        if (!decoded) throw new AuthenticationError('The Token is Invalid');
+
+        const postToLike = await Post.findById(postID);
+        if (!postToLike) throw new Error('No Post Were returned');
+
+        const likeIndex = postToLike.likes.findIndex(like => like.username === decoded.username);
+
+        if (likeIndex === -1) {//if he doesn't like it, he will
+          const like = { id: uuid(), username: decoded.username, createdAt: new Date().toISOString() }
+          postToLike.likes.unshift(like);
+        }
+
+        else postToLike.likes.splice(likeIndex, 1);//unlike instead
+
+        return await postToLike.save();
       } catch (error) {
         throw error;
       }

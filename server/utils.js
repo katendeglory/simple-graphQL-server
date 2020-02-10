@@ -8,7 +8,8 @@ module.exports = {
     try {
       const bearerToken = context.req.headers.authorization;
       let token = bearerToken ? bearerToken.split(" ")[1] : "";
-      return jwt.verify(token, process.env.JWT_SECRET) || false;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET) || false;
+      return decoded;
     } catch (error) {
       throw error;
     }

@@ -12,5 +12,9 @@ module.exports = {
   },
   Subscription: {
     ...require('./posts').Subscription
+  },
+  // Modifiers
+  Post: {
+    ...require('./posts').Post
   }
 }

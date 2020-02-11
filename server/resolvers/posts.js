@@ -1,4 +1,4 @@
-const { UserInputError, AuthenticationError } = require('apollo-server');
+const { AuthenticationError } = require('apollo-server');
 const uuid = require('uuid');
 const Post = require("../models/Post");
 const utils = require('../utils');
@@ -19,6 +19,7 @@ module.exports = {
         if (decoded.username !== newPost.username) throw new AuthenticationError("This Token belongs to another user");
         const savedPost = await newPost.save();
 
+        //send this to subscribers of the newpost event
         context.pubsub.publish('NEW_POST', { newPost: savedPost });
 
         return savedPost._doc;
@@ -66,5 +67,10 @@ module.exports = {
     newPost: {
       subscribe: (_, args, { pubsub }) => pubsub.asyncIterator('NEW_POST')
     }
+  },
+  //Modifiers
+  Post: {
+    likeCount: (parent) => parent.likes.length,
+    commentCount: (parent) => parent.comments.length
   }
 }

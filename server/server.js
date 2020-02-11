@@ -8,13 +8,18 @@ mongoose.connection.once('open', () => console.log(`Mongo Connected`));
 mongoose.connection.on('error', (error) => console.log(`Error : ${error.message}`));
 
 //Apollo Server
-const { ApolloServer } = require('apollo-server');
+const { ApolloServer, PubSub } = require('apollo-server');
 
 const resolvers = require('./resolvers');
 const typeDefs = require('./typeDefs');
 
+const pubsub = new PubSub();
+
 //Server
-const server = new ApolloServer({ typeDefs, resolvers, context: ctx => ({ req: ctx.req }) });
+const server = new ApolloServer({
+  typeDefs, resolvers,
+  context: ctx => ({ req: ctx.req, pubsub })
+});
 
 const port = process.env.PORT || 5000;
 server.listen(port).then(({ url }) => console.log(`🚀 Server ready at ${url}`));

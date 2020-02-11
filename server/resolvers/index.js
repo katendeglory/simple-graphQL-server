@@ -9,5 +9,8 @@ module.exports = {
     ...require('./posts').Mutation,
     ...require('./users').Mutation,
     ...require('./comment').Mutation
+  },
+  Subscription: {
+    ...require('./posts').Subscription
   }
 }

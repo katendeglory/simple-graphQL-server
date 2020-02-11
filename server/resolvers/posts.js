@@ -18,6 +18,9 @@ module.exports = {
         if (!decoded) throw new AuthenticationError("The Token is Invalid");
         if (decoded.username !== newPost.username) throw new AuthenticationError("This Token belongs to another user");
         const savedPost = await newPost.save();
+
+        context.pubsub.publish('NEW_POST', { newPost: savedPost });
+
         return savedPost._doc;
       } catch (error) {
         throw error;
@@ -57,6 +60,11 @@ module.exports = {
       } catch (error) {
         throw error;
       }
+    }
+  },
+  Subscription: {
+    newPost: {
+      subscribe: (_, args, { pubsub }) => pubsub.asyncIterator('NEW_POST')
     }
   }
 }
